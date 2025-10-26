@@ -1,0 +1,141 @@
+@model IEnumerable<Sublinet.Models.Producto>
+
+@{
+    ViewData["Title"] = "Tienda - Sublinet";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Filtros -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <!-- Filtro por Categoría -->
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select name="categoria" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todas las categorías</option>
+                                @foreach (var categoria in ViewBag.Categorias)
+                                {
+                                    <option value="@categoria.Nombre" selected="@(ViewContext.HttpContext.Request.Query["categoria"] == categoria.Nombre)">
+                                        @categoria.Nombre
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Talla -->
+                        <div class="mb-3">
+                            <label class="form-label">Talla</label>
+                            <select name="talla" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todas las tallas</option>
+                                @foreach (var talla in ViewBag.Tallas)
+                                {
+                                    <option value="@talla" selected="@(ViewContext.HttpContext.Request.Query["talla"] == talla)">
+                                        @talla
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Color -->
+                        <div class="mb-3">
+                            <label class="form-label">Color</label>
+                            <select name="color" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todos los colores</option>
+                                @foreach (var color in ViewBag.Colores)
+                                {
+                                    <option value="@color" selected="@(ViewContext.HttpContext.Request.Query["color"] == color)">
+                                        @color
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
+                        <a href="@Url.Action("Tienda")" class="btn btn-outline-secondary w-100 mt-2">Limpiar Filtros</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Nuestra Colección</h2>
+                <span class="text-muted">@Model.Count() productos encontrados</span>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    <h4>No se encontraron productos</h4>
+                    <p>Intenta con otros filtros o <a href="@Url.Action("Tienda")">ver todos los productos</a></p>
+                </div>
+            }
+
+            <div class="row">
+                @foreach (var producto in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 product-card">
+                            <img src="@producto.ImagenURL" class="card-img-top" alt="@producto.Nombre" style="height: 250px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">@producto.Nombre</h5>
+                                <p class="card-text text-muted">@producto.Categoria.Nombre</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <strong>Talla:</strong> @producto.Talla<br>
+                                        <strong>Color:</strong> @producto.Color<br>
+                                        <strong>Stock:</strong> @producto.Stock unidades
+                                    </small>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        @if (producto.PrecioDescuento.HasValue)
+                                        {
+                                            <span class="text-muted text-decoration-line-through">@producto.Precio.ToString("C")</span>
+                                            <span class="h5 text-danger ms-2">@producto.PrecioDescuento.Value.ToString("C")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="h5 text-primary">@producto.Precio.ToString("C")</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-grid gap-2">
+                                    <a href="@Url.Action("DetalleProducto", "Home", new { id = producto.ProductoID })" class="btn btn-outline-primary">Ver Detalles</a>
+                                    @if (producto.Stock > 0)
+                                    {
+                                        <button class="btn btn-primary" onclick="agregarAlCarrito(@producto.ProductoID)">
+                                            <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary" disabled>Agotado</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function agregarAlCarrito(productoId) {
+            // Aquí implementarías la lógica del carrito
+            alert('Producto agregado al carrito: ' + productoId);
+        }
+    </script>
+}

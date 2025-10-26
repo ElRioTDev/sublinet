@@ -1,0 +1,105 @@
+@model Sublinet.Models.Producto
+
+@{
+    ViewData["Title"] = Model.Nombre + " - Sublinet";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.ImagenURL" class="img-fluid rounded" alt="@Model.Nombre">
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Tienda", "Home")">Tienda</a></li>
+                    <li class="breadcrumb-item active">@Model.Nombre</li>
+                </ol>
+            </nav>
+
+            <h1 class="display-5">@Model.Nombre</h1>
+            <p class="text-muted">Categoría: @Model.Categoria.Nombre</p>
+            
+            <p class="lead">@Model.Descripcion</p>
+
+            <div class="mb-3">
+                <strong>Material:</strong> @Model.Material
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <strong>Talla:</strong> @Model.Talla
+                </div>
+                <div class="col-6">
+                    <strong>Color:</strong> @Model.Color
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <strong>Stock disponible:</strong> 
+                @if (Model.Stock > 0)
+                {
+                    <span class="text-success">@Model.Stock unidades</span>
+                }
+                else
+                {
+                    <span class="text-danger">Agotado</span>
+                }
+            </div>
+
+            <div class="mb-4">
+                @if (Model.PrecioDescuento.HasValue)
+                {
+                    <div class="d-flex align-items-center">
+                        <span class="h3 text-danger me-3">@Model.PrecioDescuento.Value.ToString("C")</span>
+                        <span class="text-muted text-decoration-line-through h5">@Model.Precio.ToString("C")</span>
+                        <span class="badge bg-danger ms-2">Oferta</span>
+                    </div>
+                }
+                else
+                {
+                    <span class="h3 text-primary">@Model.Precio.ToString("C")</span>
+                }
+            </div>
+
+            @if (Model.Stock > 0)
+            {
+                <div class="d-grid gap-2 d-md-flex">
+                    <button class="btn btn-primary btn-lg flex-fill" onclick="agregarAlCarrito(@Model.ProductoID)">
+                        <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                    </button>
+                    <button class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-heart"></i> Favorito
+                    </button>
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-lg w-100" disabled>Producto Agotado</button>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle"></i> Este producto estará disponible pronto
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Productos Relacionados -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Productos Relacionados</h3>
+            <div class="row" id="productosRelacionados">
+                <!-- Los productos relacionados se cargarían aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function agregarAlCarrito(productoId) {
+            // Lógica para agregar al carrito
+            alert('Producto agregado al carrito: ' + productoId);
+        }
+    </script>
+}

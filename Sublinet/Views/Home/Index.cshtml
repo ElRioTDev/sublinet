@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Sublinet.Models.Producto>
+
+@{
+    ViewData["Title"] = "Sublinet - Tienda de Camisas";
+}
+
+<!-- Hero Section -->
+<section class="hero bg-primary text-white text-center py-5">
+    <div class="container">
+        <h1 class="display-4">Bienvenido a Sublinet</h1>
+        <p class="lead">Descubre nuestra exclusiva colección de camisas</p>
+        <a href="@Url.Action("Tienda", "Home")" class="btn btn-light btn-lg">Ver Colección</a>
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Productos Destacados</h2>
+        <div class="row">
+            @foreach (var producto in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="@producto.ImagenURL" class="card-img-top" alt="@producto.Nombre" style="height: 250px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@producto.Nombre</h5>
+                            <p class="card-text">@producto.Descripcion</p>
+                            <p class="card-text">
+                                <strong>Talla:</strong> @producto.Talla<br>
+                                <strong>Color:</strong> @producto.Color
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                @if (producto.PrecioDescuento.HasValue)
+                                {
+                                    <div>
+                                        <span class="text-muted text-decoration-line-through">@producto.Precio.ToString("C")</span>
+                                        <span class="h5 text-danger ms-2">@producto.PrecioDescuento.Value.ToString("C")</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="h5 text-primary">@producto.Precio.ToString("C")</span>
+                                }
+                                <a href="@Url.Action("DetalleProducto", "Home", new { id = producto.ProductoID })" class="btn btn-outline-primary">Ver Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Tienda", "Home")" class="btn btn-primary btn-lg">Ver Todos los Productos</a>
+        </div>
+    </div>
+</section>
+
+<!-- Características -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
+                    <h4>Envío Gratis</h4>
+                    <p>En compras mayores a $50</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-undo-alt fa-3x text-primary mb-3"></i>
+                    <h4>Devoluciones</h4>
+                    <p>30 días para devoluciones</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-award fa-3x text-primary mb-3"></i>
+                    <h4>Calidad Premium</h4>
+                    <p>Materiales de primera calidad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
